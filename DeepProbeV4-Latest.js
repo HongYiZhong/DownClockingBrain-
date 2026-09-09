@@ -6,7 +6,6 @@
         zh: { 'extensionName': '探针', 'reporterBlock': '[TEXT]的第[LETTER_NUM] 个字母', 'myReporter.TEXT_default': 'abcdefg' },
         en: { 'extensionName': 'probe', 'reporterBlock': 'letter [LETTER_NUM] of [TEXT]', 'myReporter.TEXT_default': 'abcdefg' }
     });
-    ///V4
     function probeV4(rt) {
         const L = (...a) => console.log(...a);
 
@@ -17,7 +16,7 @@
             // 逐个看:是函数就标
             own.forEach(k => {
                 let v;
-                try { v = rt.ccwAPI[k]; } catch (e) { v = `<读取抛错: ${e.message}>`; }
+                try { v = rt.ccwAPI[k]; } catch (e) { v = `<读取抛错: ${e.message}>`; }//打卡第一次
                 L(`  ccwAPI.${k} =`, typeof v === 'function' ? '函数' : v);
             });
             //V3找到个getOpenVM,重头戏:能不能拿到整个VM
@@ -31,13 +30,13 @@
                         L('  VM 原型方法:', Object.getOwnPropertyNames(
                             Object.getPrototypeOf(vm)).join(', '));
                     }
-                } catch (e) { L('[getOpenVM() 抛错]', e.message); }
+                } catch (e) { L('[getOpenVM() 抛错]', e.message); }//打卡第二次
             }
             //其它能直接读的元信息
             ['getProjectUUID', 'getProjectSb3Id', 'getDeviceType'].forEach(fn => {
                 if (typeof rt.ccwAPI[fn] === 'function') {
                     try { L(`[${fn}()]`, rt.ccwAPI[fn]()); }
-                    catch (e) { L(`[${fn}() 抛错]`, e.message); }
+                    catch (e) { L(`[${fn}() 抛错]`, e.message); }//打卡第三次
                 }
             });
         }
@@ -64,7 +63,7 @@
             rt.setCompilerOptions({ enabled: true, warpTimer: true });
             L('[编译器]尝试开启后:', JSON.stringify(rt.compilerOptions));
             L('[编译器]若仍是false则需要CCW权限或被上层锁定');
-        } catch (e) { L('[编译器] 开启抛错:', e.message); }
+        } catch (e) { L('[编译器] 开启抛错:', e.message); }//打卡第四次
         //解决BEFORE_EXECUTE空payload
         //V3发现钩子不带数据,就自己去线程栈顶取
         if (!rt.__execHooked) {
@@ -109,7 +108,7 @@
             probeV4(_runtime);
             probeV4(runtime);
             //顺便看两者是否同一对象
-            try { console.log('[同一对象?]', _runtime === runtime); } catch (e) { }
+            try { console.log('[同一对象?]', _runtime === runtime); } catch (e) { }//打卡第五次
         }
         getInfo() {
             return {
